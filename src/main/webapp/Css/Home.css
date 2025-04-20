@@ -1,0 +1,79 @@
+@charset "UTF-8";
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+main {
+	padding: 40px 60px;
+	background-color: #fff;
+}
+
+.slider {
+	position: relative;
+	height: 300px;
+	width: 100%;
+	margin: 0 auto 30px;
+	overflow: hidden;
+	border-radius: 10px;
+}
+
+.slider img.slide {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: none;
+	transition: opacity 0.5s ease-in-out;
+}
+
+.slider img.active {
+	display: block;
+}
+
+.watch-grid {
+	display: flex;
+	gap: 20px;
+	justify-content: center;
+}
+
+.watch-card {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	padding: 20px;
+	text-align: center;
+	width: 250px;
+	transition: transform 0.2s ease-in-out;
+}
+
+.watch-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.watch-card img {
+	max-width: 100%;
+	height: 200px;
+	object-fit: contain;
+}
+
+.watch-card h3 {
+	color: #4b1c76;
+	font-size: 20px;
+	margin: 10px 0 5px;
+}
+
+.watch-card p {
+	margin: 0;
+	font-size: 16px;
+	color: #666;
+}
+
+.watch-card .price {
+	color: #28a745;
+	font-weight: bold;
+	margin-top: 8px;
+	font-size: 18px;
+}
