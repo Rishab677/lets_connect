@@ -3,109 +3,154 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8" />
-<title>This is the Cart Page</title>
-
-<!-- Improved Internal CSS -->
+<meta charset="UTF-8">
+<title>Your Cart</title>
 <style>
-* {
-	box-sizing: border-box;
-}
-
 body {
+	background: #f5f5f5;
 	margin: 0;
 	padding: 0;
-	background-color: #fff;
+}
+
+main {
+	max-width: 1000px;
+	margin: 50px auto;
+	padding: 30px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+	margin-bottom: 20px;
+	font-size: 26px;
 	color: #333;
 }
 
-.breadcrumb {
-	padding: 10px 25px;
-	font-size: 14px;
-	color: #666;
-	margin: 0;
+table {
+	width: 100%;
+	border-collapse: collapse;
 }
 
-.breadcrumb strong {
-	color: #000;
+thead {
+	background-color: #eee;
 }
 
-.breadcrumb a {
-	text-decoration: none;
-	color: #6b4cc7;
-	font-weight: bold;
-}
-
-.breadcrumb a:hover {
-	text-decoration: underline;
-}
-
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 60px 20px;
+th, td {
+	padding: 14px;
 	text-align: center;
-}
-
-.cart-icon img {
-	width: 100px;
-	height: auto;
-	margin-bottom: 25px;
-}
-
-.empty-message {
-	font-size: 18px;
-	font-weight: bold;
-	color: #d9534f;
-	margin-bottom: 30px;
-	border: 1px solid #ddd;
-	padding: 20px 30px;
-	border-radius: 8px;
-	background-color: #fff0f0;
+	border-bottom: 1px solid #ddd;
 }
 
 .btn {
-	background-color: #6b4cc7;
-	color: white;
-	padding: 12px 28px;
+	padding: 5px 12px;
 	border: none;
-	border-radius: 8px;
-	font-size: 15px;
+	background-color: #6b4cc7;
+	color: #fff;
+	border-radius: 5px;
+	font-size: 14px;
 	cursor: pointer;
-	text-decoration: none;
-	transition: background-color 0.3s ease;
 }
 
 .btn:hover {
 	background-color: #5538a6;
 }
 
-iframe {
-	display: block;
+.qty-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+
+.qty-input {
+	width: 40px;
+	text-align: center;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 }
 </style>
-</head>
+<script>
+	function updateTotalPrice(rowId, price) {
+		const qtyInput = document.getElementById("qty" + rowId);
+		const qty = parseInt(qtyInput.value);
+		const totalField = document.getElementById("total" + rowId);
+		totalField.innerText = "Rs. " + (qty * price).toFixed(2);
+	}
 
+	function increaseQty(rowId, price) {
+		const qtyInput = document.getElementById("qty" + rowId);
+		qtyInput.value = parseInt(qtyInput.value) + 1;
+		updateTotalPrice(rowId, price);
+	}
+
+	function decreaseQty(rowId, price) {
+		const qtyInput = document.getElementById("qty" + rowId);
+		if (parseInt(qtyInput.value) > 1) {
+			qtyInput.value = parseInt(qtyInput.value) - 1;
+			updateTotalPrice(rowId, price);
+		}
+	}
+</script>
+</head>
 <body>
+
+	<!-- Header Include -->
 	<jsp:include page="/WEB-INF/Pages/Header.jsp" />
 
+	<main>
+		<h1>Your Cart</h1>
 
-	<div class="breadcrumb">
-		<a href="/Home.html">Home</a> &gt; <strong>Cart</strong>
-	</div>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Product Name</th>
+					<th>Price</th>
+					<th>Qty</th>
+					<th>Total Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Example Row 1 -->
+				<tr>
+					<td>1</td>
+					<td>Wireless Mouse</td>
+					<td>Rs. 499.00</td>
+					<td>
+						<div class="qty-box">
+							<button class="btn" onclick="decreaseQty(1, 499)">−</button>
+							<input type="text" id="qty1" class="qty-input" value="1" readonly />
+							<button class="btn" onclick="increaseQty(1, 499)">+</button>
+						</div>
+					</td>
+					<td id="total1">Rs. 499.00</td>
+				</tr>
 
-	<div class="container">
-		<div class="cart-icon">
-			<img src="https://cdn-icons-png.flaticon.com/512/102/102661.png"
-				alt="Empty Box" />
+				<!-- Example Row 2 -->
+				<tr>
+					<td>2</td>
+					<td>USB Keyboard</td>
+					<td>Rs. 699.00</td>
+					<td>
+						<div class="qty-box">
+							<button class="btn" onclick="decreaseQty(2, 699)">−</button>
+							<input type="text" id="qty2" class="qty-input" value="1" readonly />
+							<button class="btn" onclick="increaseQty(2, 699)">+</button>
+						</div>
+					</td>
+					<td id="total2">Rs. 699.00</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div style="text-align: right; margin-top: 25px;">
+			<button class="btn" onclick="alert('Proceeding to checkout...')">Checkout</button>
 		</div>
+	</main>
 
-		<div class="empty-message">YOUR CART IS CURRENTLY EMPTY.</div>
-
-		<a href="#" class="btn">Return to Shop</a>
-	</div>
-
+	<!-- Footer Include -->
 	<jsp:include page="/WEB-INF/Pages/Footer.jsp" />
 </body>
 </html>

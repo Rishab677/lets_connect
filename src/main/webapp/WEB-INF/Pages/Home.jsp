@@ -12,7 +12,7 @@
 <style>
 /* Global styles */
 body {
-	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
 	margin: 0;
 	padding: 0;
 	color: #000;
