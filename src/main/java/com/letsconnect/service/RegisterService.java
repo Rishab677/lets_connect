@@ -2,6 +2,7 @@ package com.letsconnect.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.io.InputStream;
 
@@ -39,6 +40,26 @@ public class RegisterService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+   
+    public boolean userExists(String username, String email) {
+        String sql = "SELECT id FROM users WHERE username = ? OR email = ?";
+
+        try (Connection conn = DbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next(); // true if at least one result is found
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true; // safer to assume it exists if there's an error
         }
     }
 }

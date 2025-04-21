@@ -9,36 +9,49 @@ import com.letsconnect.configure.DbConfig;
 
 public class loginservice {
 
-    // Checks if the user's credentials match what's stored in the database
+    // Validates user credentials
     public boolean loginUser(User user) {
-        // Correct SQL query with parameterized placeholders for username and password
         String query = "SELECT password FROM users WHERE username = ? AND password = ?";
 
         try (Connection conn = DbConfig.getConnection(); 
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // Set the values for the placeholders
-            stmt.setString(1, user.getUsername());  // Set the username
-            stmt.setString(2, user.getPassword());  // Set the password
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next(); // Returns true if user exists with matching password
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Fetches full user info (including role) after successful login
+    public User getUserByUsername(String username) {
+        String query = "SELECT username, password, role FROM users WHERE username = ?";
+
+        try (Connection conn = DbConfig.getConnection(); 
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, username);
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String dbPassword = rs.getString("password");  // Retrieve the password from the DB
-                // Debugging: Output retrieved password and input password
-                System.out.println("DB Password: " + dbPassword);
-                System.out.println("Input Password: " + user.getPassword());
-
-                // Direct password comparison (Plaintext comparison)
-                return dbPassword.equals(user.getPassword());
-            } else {
-                return false; // No user found with the given username or incorrect password
+                User user = new User();
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                return user;
             }
 
         } catch (Exception e) {
-            // Log the error (use a logger instead of printStackTrace in production)
             e.printStackTrace();
-            return false; // Treat exception as login failure
         }
+
+        return null; // Return null if not found or error
     }
 }

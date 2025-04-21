@@ -37,7 +37,7 @@
 
 					<p class="register">
 						Don’t have an account? <a
-							href="${pageContext.request.contextPath}/register">Register
+							href="${pageContext.request.contextPath}/registration">Register
 							Now</a>
 					</p>
 				</form>

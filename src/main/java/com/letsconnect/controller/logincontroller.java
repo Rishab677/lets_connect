@@ -37,35 +37,44 @@ public class logincontroller extends HttpServlet {
 
         // Check if both username and password are provided
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-            // Set error message if either username or password is missing
             req.setAttribute("error", "Please fill in both username and password.");
-            // Forward to login page with error message
             req.getRequestDispatcher("/WEB-INF/Pages/Login.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/Pages/Profile.jsp").forward(req, resp);
             return;
         }
 
-        // Trim any leading/trailing spaces from the username and password
+        // Trim any leading/trailing spaces
         username = username.trim();
         password = password.trim();
 
-        // Create a User object to hold the entered username and password
+        // Create a User object with submitted credentials
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
 
-        // Call loginService to validate user credentials
+        // Validate user login
         boolean isValidUser = loginService.loginUser(user);
 
-        // If credentials are valid, create a session and set a cookie
         if (isValidUser) {
-            // Store username in session
+            // Fetch complete user details including role
+            User fullUser = loginService.getUserByUsername(username);
+            String role = fullUser.getRole();
+
+            // Store username and role in session
             SessionUtil.setAttribute(req, "username", username);
-            // Add a cookie to remember the user role (valid for 5 hours)
-            CookieUtil.addCookie(resp, "role", "user", 5 * 30);
-            // Redirect to home page after successful login
-            resp.sendRedirect(req.getContextPath() + "/home"); // Change to a valid servlet URL
+            SessionUtil.setAttribute(req, "role", role);
+
+            // Add role cookie (optional)
+            CookieUtil.addCookie(resp, "role", role, 5 * 30); // 5 * 30 = 150 minutes
+
+            // Redirect based on role
+            if ("admin".equalsIgnoreCase(role)) {
+            	   req.getRequestDispatcher("/WEB-INF/Pages/Admin.jsp").forward(req, resp);
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/home");
+            }
+
         } else {
-            // If credentials are invalid, set error message and forward to login page
             req.setAttribute("error", "Invalid username or password.");
             req.getRequestDispatcher("/WEB-INF/Pages/Login.jsp").forward(req, resp);
         }
