@@ -210,7 +210,7 @@
                 <input type="submit" value="Register" class="btnregister">
 
                 <p class="login">
-                    Already have an account? <a href="${pageContext.request.contextPath}/Login.jsp">Login Now</a>
+                    Already have an account? <a href="${pageContext.request.contextPath}/login">Login Now</a>
                 </p>
             </form>
         </div>

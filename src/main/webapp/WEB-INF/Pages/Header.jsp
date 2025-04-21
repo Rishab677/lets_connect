@@ -35,7 +35,7 @@
 					<a href="${pageContext.request.contextPath}/Addtocart"> <img
 						src="${pageContext.request.contextPath}/Resources/Image/login/shopping-cart.png"
 						alt="Cart" title="Cart" />
-					</a> <a href="${pageContext.request.contextPath}/login"> <img
+					</a> <a href="${pageContext.request.contextPath}/profile"> <img
 						src="${pageContext.request.contextPath}/Resources/Image/login/user.png" alt="User"
 						title="User" />
 					</a>
