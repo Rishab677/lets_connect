@@ -127,6 +127,7 @@ input[type="submit"]:hover {
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/Pages/Header.jsp" />
 	<div class="container">
 
 		<div class="form-section">
@@ -160,9 +161,8 @@ input[type="submit"]:hover {
 
 				<label for="totalPrice">Total Price</label> <input type="text"
 					id="totalPrice" name="totalPrice"
-					value="<%=String.format("%.2f", totalPrice)%>" readonly>
-
-				<label for="location">Delivery Location</label> <input type="text"
+					value="<%=String.format("%.2f", totalPrice)%>" readonly> <label
+					for="location">Delivery Location</label> <input type="text"
 					id="location" name="location" required>
 
 				<h3>Delivery Information</h3>
@@ -227,5 +227,7 @@ input[type="submit"]:hover {
 		</div>
 
 	</div>
+
+	<jsp:include page="/WEB-INF/Pages/Footer.jsp" />
 </body>
 </html>
