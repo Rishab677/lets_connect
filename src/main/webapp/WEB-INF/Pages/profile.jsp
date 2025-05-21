@@ -136,6 +136,7 @@ function closeModal() {
 
 	<div class="right">
 		<h2>User Profile</h2>
+	<!-- 	hello world -->
 
 		<c:if test="${not empty success}">
 			<div class="message">${success}</div>
