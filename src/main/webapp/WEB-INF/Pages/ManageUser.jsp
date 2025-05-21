@@ -164,11 +164,7 @@ th {
 							</td>
 						</tr>
 					</c:forEach>
-					<c:if test="${empty users}">
-						<tr>
-							<td colspan="11">No users found.</td>
-						</tr>
-					</c:if>
+					
 				</tbody>
 			</table>
 		</div>

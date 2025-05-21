@@ -2,111 +2,88 @@ package com.letsconnect.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 
-/**
- * Utility class for handling image file uploads.
- * <p>
- * This class provides methods for extracting the file name from a {@link Part}
- * object and uploading the image file to a specified directory on the server.
- * </p>
- */
 public class ImageUtil {
 
-	/**
-	 * Extracts the file name from the given {@link Part} object based on the
-	 * "content-disposition" header.
-	 * 
-	 * <p>
-	 * This method parses the "content-disposition" header to retrieve the file name
-	 * of the uploaded image. If the file name cannot be determined, a default name
-	 * "download.png" is returned.
-	 * </p>
-	 * 
-	 * @param part the {@link Part} object representing the uploaded file.
-	 * @return the extracted file name. If no filename is found, returns a default
-	 *         name "download.png".
-	 */
-	public String getImageNameFromPart(Part part) {
-		// Retrieve the content-disposition header from the part
-		String contentDisp = part.getHeader("content-disposition");
+    /**
+     * Extracts the file name from the given {@link Part} object.
+     *
+     * @param part the uploaded file part
+     * @return the extracted file name or "download.png" if not found
+     */
+    public String getImageNameFromPart(Part part) {
+        if (part == null) {
+            System.out.println("⚠️ Part is null in getImageNameFromPart");
+            return "download.png";
+        }
 
-		// Split the header by semicolons to isolate key-value pairs
-		String[] items = contentDisp.split(";");
+        String contentDisp = part.getHeader("content-disposition");
+        if (contentDisp == null) {
+            System.out.println("⚠️ content-disposition header is null");
+            return "download.png";
+        }
 
-		// Initialize imageName variable to store the extracted file name
-		String imageName = null;
+        for (String item : contentDisp.split(";")) {
+            if (item.trim().startsWith("filename")) {
+                String imageName = item.substring(item.indexOf('=') + 2, item.length() - 1);
+                if (!imageName.isEmpty()) {
+                    return Paths.get(imageName).getFileName().toString(); // Ensures only filename is returned
+                }
+            }
+        }
 
-		// Iterate through the items to find the filename
-		for (String s : items) {
-			if (s.trim().startsWith("filename")) {
-				// Extract the file name from the header value
-				imageName = s.substring(s.indexOf("=") + 2, s.length() - 1);
-			}
-		}
+        return "download.png";
+    }
 
-		// Check if the filename was not found or is empty
-		if (imageName == null || imageName.isEmpty()) {
-			// Assign a default file name if none was provided
-			imageName = "download.png";
-		}
+    /**
+     * Uploads the image to the specified folder under webapp/Resources/Image/profile/
+     *
+     * @param part       the uploaded file part
+     * @param saveFolder the folder name (e.g., "profile", "products", etc.)
+     * @param request    the HTTP servlet request
+     * @return true if upload succeeded, false otherwise
+     */
+    public boolean uploadImage(Part part, String saveFolder, HttpServletRequest request) {
+        if (part == null) {
+            System.out.println("⚠️ Cannot upload image: Part is null.");
+            return false;
+        }
 
-		// Return the extracted or default file name
-		return imageName;
-	}
+        String uploadDir = getSavePath(saveFolder);
+        File fileSaveDir = new File(uploadDir);
 
-	/**
-	 * Uploads the image file from the given {@link Part} object to a specified
-	 * directory on the server.
-	 * 
-	 * <p>
-	 * This method ensures that the directory where the file will be saved exists
-	 * and creates it if necessary. It writes the uploaded file to the server's file
-	 * system. Returns {@code true} if the upload is successful, and {@code false}
-	 * otherwise.
-	 * </p>
-	 * 
-	 * @param part the {@link Part} object representing the uploaded image file.
-	 * @return {@code true} if the file was successfully uploaded, {@code false}
-	 *         otherwise.
-	 */
-	public boolean uploadImage(Part part, String rootPath, String saveFolder) {
-		String savePath = getSavePath(saveFolder);
-		File fileSaveDir = new File(savePath);
+        // Create directory if it doesn't exist
+        if (!fileSaveDir.exists()) {
+            if (!fileSaveDir.mkdirs()) {
+                System.out.println("❌ Failed to create directory: " + uploadDir);
+                return false;
+            }
+        }
 
-		// Ensure the directory exists
-		if (!fileSaveDir.exists()) {
-			if (!fileSaveDir.mkdir()) {
-				return false; // Failed to create the directory
-			}
-		}
-		try {
-			// Get the image name
-			String imageName = getImageNameFromPart(part);
-			// Create the file path
-			String filePath = savePath + "/" + imageName;
-			// Write the file to the server
-			part.write(filePath);
-			return true; // Upload successful
-		} catch (IOException e) {
-			e.printStackTrace(); // Log the exception
-			return false; // Upload failed
-		}
-	}
+        try {
+            String imageName = getImageNameFromPart(part);
+            String filePath = uploadDir + File.separator + imageName;
+            part.write(filePath);
+            System.out.println("✅ Image uploaded to: " + filePath);
+            return true;
+        } catch (IOException e) {
+            System.out.println("❌ IOException while uploading image:");
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	/**
-	 * Constructs the full path where the image will be saved on the server.
-	 * <p>
-	 * This method takes the folder name where the image will be saved and appends
-	 * it to your base path.
-	 * </p>
-	 * 
-	 * @param saveFolder the folder name where the image will be saved.
-	 * @return the full path to the save directory.
-	 */
-	public String getSavePath(String saveFolder) {
-		// Specify the base path where you want to save the images
-		return "/Users/rishabacharya/eclipse-workspace/Coursework3/src/main/webapp/Resources/Image/profile" + saveFolder + "/";
-	}
+    /**
+     * Constructs the full path to the save folder.
+     *
+     * @param saveFolder the folder name (like "profile", "products", etc.)
+     * @return full system path to the folder
+     */
+    public String getSavePath(String saveFolder) {
+        return "Resources/Image/profile" + saveFolder;
+    }
 }

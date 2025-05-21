@@ -12,9 +12,9 @@ public class User {
     private String gender;
     private String province;
     private String city;
-    private String profilePhoto;
+    
 
-  
+   
     public int getId() {
         return id;
     }
@@ -23,7 +23,7 @@ public class User {
         this.id = id;
     }
 
-    // Existing getters and setters
+  
     public String getUsername() {
         return username;
     }
@@ -104,11 +104,5 @@ public class User {
         this.city = city;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(String profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
+    
 }

@@ -9,6 +9,14 @@
 <title>Product</title>
 </head>
 <style>
+
+
+h2 {
+	color: #d32f2f;
+	margin: 20px;
+	text-align: center;
+}
+
 .phonegrid {
 	display: flex;
 	justify-content: center;
@@ -57,7 +65,6 @@
 	text-align: center;
 	overflow: hidden;
 	text-decoration: none;
-
 }
 
 .price {
@@ -66,11 +73,10 @@
 	color: #d50000;
 	margin: 10px 0;
 	text-decoration: none;
-
 }
 
 .addtocartbtn {
-	background-color: #4b1c76;
+	background-color: #5e3c7d;
 	color: white;
 	padding: 10px 14px;
 	border: none;
@@ -81,58 +87,16 @@
 }
 
 .addtocartbtn:hover {
-	background-color: #4b1c76;
-}
-
-.searchbar {
-	text-align: center;
-	margin: 30px 0;
-}
-
-.searchbar input[type="text"] {
-	padding: 10px;
-	width: 300px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-}
-
-.searchbar button {
-	padding: 10px 20px;
-	font-size: 16px;
-	margin-left: 10px;
-	border: none;
-	background-color: #4b1c76;
-	color: white;
-	border-radius: 5px;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
-}
-
-.searchbar button:hover {
-	background-color: #218838;
-}
-.message {
-    text-align: center;
-    font-size: 1.5em;
-    color: #e74c3c;
-    margin-top: 20px;
+	background-color:#4b1c76;
 }
 </style>
 <body>
 
 
 	<jsp:include page="/WEB-INF/Pages/Header.jsp" />
+	
 
-
-
-	<div class="searchbar">
-		<form action="${pageContext.request.contextPath}/home" method="get">
-			<input type="text" name="searchQuery"
-				placeholder="Search for products..." value="${param.searchQuery}" />
-			<button type="submit">Search</button>
-		</form>
-	</div>
+	<h2>Our Available Products</h2>
 
 	<div class="phonegrid">
 		<c:if test="${not empty products}">
@@ -165,11 +129,14 @@
 							</p>
 							<div class="price">$${product.price}</div>
 						</a>
-						<form action="${pageContext.request.contextPath}/add-to-cart"
-							method="post">
+						<form action="${pageContext.request.contextPath}/productdetails"
+							method="get">
 							<input type="hidden" name="productId" value="${product.id}" />
-							<button type="submit" class="addtocartbtn">Add to Cart</button>
+							<button type="hidden" name="productId" class="addtocartbtn">Order
+								Now</button>
 						</form>
+
+
 					</div>
 				</c:if>
 			</c:forEach>
@@ -178,6 +145,7 @@
 			<p class="message">No products available at the moment.</p>
 		</c:if>
 	</div>
+	
 
 	<jsp:include page="/WEB-INF/Pages/Footer.jsp" />
 </body>

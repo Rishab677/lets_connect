@@ -22,7 +22,7 @@ public class ProductService {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    // Add product and return true if inserted successfully
+    
     public boolean addProduct(Product product) throws SQLException {
         if (product == null) return false;
 
@@ -42,7 +42,7 @@ public class ProductService {
                 return false;
             }
 
-            // Optionally retrieve generated ProductID and set it in product
+        
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     product.setId(generatedKeys.getInt(1));

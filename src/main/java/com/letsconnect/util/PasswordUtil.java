@@ -1,55 +1,78 @@
 package com.letsconnect.util;
 
-import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
+
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Base64;
+
+import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 public class PasswordUtil {
 
-    private static final int SALT_LENGTH = 16; // bytes
+    private static final int SALT_LENGTH_BYTE = 16;
+    private static final int HASH_LENGTH_BYTE = 32;
     private static final int ITERATIONS = 65536;
-    private static final int KEY_LENGTH = 256; // bits
+    private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
-    // Generate random salt
-    public static byte[] generateSalt() {
-        byte[] salt = new byte[SALT_LENGTH];
+    // Generate a random salt
+    private static byte[] getRandomSalt() {
+        byte[] salt = new byte[SALT_LENGTH_BYTE];
         new SecureRandom().nextBytes(salt);
         return salt;
     }
 
-    // Hash password with salt and return Base64(salt):Base64(hash)
-    public static String hashPassword(String password) {
-        byte[] salt = generateSalt();
-        byte[] hash = pbkdf2(password.toCharArray(), salt);
-        return Base64.getEncoder().encodeToString(salt) + ":" + Base64.getEncoder().encodeToString(hash);
+    // Generate the hashed key from password and salt
+    private static byte[] hashPassword(final char[] password, final byte[] salt) throws Exception {
+        SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
+        KeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, HASH_LENGTH_BYTE * 8);
+        SecretKey secretKey = factory.generateSecret(spec);
+        return secretKey.getEncoded();
     }
 
-    // Internal PBKDF2 hashing
-    private static byte[] pbkdf2(char[] password, byte[] salt) {
+    // Encode (Hash) password and return salt + hash as Base64 string
+    public static String hashPassword(String password) {
         try {
-            PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            return skf.generateSecret(spec).getEncoded();
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException("Error while hashing a password: " + e.getMessage(), e);
+            byte[] salt = getRandomSalt();
+            byte[] hash = hashPassword(password.toCharArray(), salt);
+
+            ByteBuffer buffer = ByteBuffer.allocate(SALT_LENGTH_BYTE + HASH_LENGTH_BYTE);
+            buffer.put(salt);
+            buffer.put(hash);
+
+            return Base64.getEncoder().encodeToString(buffer.array());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
-    // Verify a password against the stored salted hash
-    public static boolean verifyPassword(String password, String stored) {
+    // Verify password by decoding Base64 and comparing with hashed input
+    public static boolean verifyPassword(String inputPassword, String storedPassword) {
         try {
-            String[] parts = stored.split(":");
-            if (parts.length != 2) {
-                return false;
+            byte[] decoded = Base64.getDecoder().decode(storedPassword);
+
+            byte[] salt = new byte[SALT_LENGTH_BYTE];
+            byte[] hash = new byte[HASH_LENGTH_BYTE];
+
+            ByteBuffer buffer = ByteBuffer.wrap(decoded);
+            buffer.get(salt);
+            buffer.get(hash);
+
+            byte[] inputHash = hashPassword(inputPassword.toCharArray(), salt);
+
+            // Direct array comparison (no timing attack protection)
+            if (inputHash.length != hash.length) return false;
+
+            for (int i = 0; i < hash.length; i++) {
+                if (inputHash[i] != hash[i]) return false;
             }
-            byte[] salt = Base64.getDecoder().decode(parts[0]);
-            byte[] storedHash = Base64.getDecoder().decode(parts[1]);
-            byte[] computedHash = pbkdf2(password.toCharArray(), salt);
-            return java.util.Arrays.equals(storedHash, computedHash);
+
+            return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

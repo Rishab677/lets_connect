@@ -10,7 +10,7 @@ body {
 	background-color: #f9f9f9;
 	margin: 0;
 	padding: 0;
-	font-family: 'Poppins', sans-serif;
+
 	color: #1a1a1a;
 }
 
@@ -37,7 +37,7 @@ a {
 	position: absolute;
 }
 
-.container {
+.contact-container {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
@@ -45,7 +45,8 @@ a {
 	padding: 60px 80px;
 	flex-direction: row;
 	align-items: center;
-	width: 50%;
+	width: 100%; /* Changed from 50% to 100% to avoid cramping */
+	box-sizing: border-box;
 }
 
 .left-side {
@@ -142,8 +143,6 @@ a {
 	color: #ff0066;
 	font-size: 20px;
 }
-
-
 </style>
 </head>
 <body>
@@ -156,7 +155,7 @@ a {
 			alt="Contact Us Banner">
 	</div>
 
-	<div class="container">
+	<div class="contact-container">
 
 		<div class="left-side">
 			<h2>Get In Touch</h2>
@@ -203,7 +202,7 @@ a {
 			</div>
 		</div>
 	</div>
-	
+
 
 	<jsp:include page="/WEB-INF/Pages/Footer.jsp" />
 

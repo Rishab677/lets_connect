@@ -37,7 +37,7 @@ public class Updateproduct extends HttpServlet {
         String action = req.getParameter("action");
         String productIdStr = req.getParameter("id");
 
-        System.out.println("[DEBUG] GET request received. Action: " + action + ", ID: " + productIdStr);
+        
 
         try {
             if (action != null && !action.isEmpty() && productIdStr != null) {
@@ -47,17 +47,17 @@ public class Updateproduct extends HttpServlet {
                     Product product = service.getProductById(id);
                     if (product != null) {
                         req.setAttribute("editProduct", product);
-                        System.out.println("[DEBUG] Editing product: " + product);
+                        
                     } else {
                         req.setAttribute("error", "Product not found with ID: " + id);
-                        System.out.println("[ERROR] Product not found with ID: " + id);
+                        
                     }
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     boolean deleted = service.deleteProduct(id);
                     req.setAttribute(deleted ? "message" : "error",
                             deleted ? "Product deleted successfully!" : "Product could not be deleted.");
-                    System.out.println("[DEBUG] Delete action status: " + deleted);
+                    
                 }
             }
 
@@ -85,7 +85,7 @@ public class Updateproduct extends HttpServlet {
                 } else {
                     resp.sendRedirect(req.getContextPath() + "/UpdateProduct?error=delete_failed");
                 }
-                System.out.println("[DEBUG] POST delete action. Deleted: " + deleted);
+                
                 return;
             }
 
@@ -96,24 +96,22 @@ public class Updateproduct extends HttpServlet {
             String specs = req.getParameter("product_specifications");
             String priceStr = req.getParameter("product_price");
 
-            System.out.println("[DEBUG] POST Request Raw Data: id=" + idStr + ", name=" + name + ", brand=" + brand + ", specs=" + specs + ", price=" + priceStr);
-
+            
             if (priceStr == null || priceStr.trim().isEmpty()) {
                 req.setAttribute("error", "Product price is required.");
                 setProductList(req);
                 req.getRequestDispatcher("/WEB-INF/Pages/UpdateProduct.jsp").forward(req, resp);
-                System.out.println("[ERROR] Product price is missing.");
+                
                 return;
             }
 
             double price = parseDoubleSafe(priceStr);
-            System.out.println("[DEBUG] Parsed price: " + price);
 
             if (price < 0) {
                 req.setAttribute("error", "Invalid product price.");
                 setProductList(req);
                 req.getRequestDispatcher("/WEB-INF/Pages/UpdateProduct.jsp").forward(req, resp);
-                System.out.println("[ERROR] Invalid product price.");
+                
                 return;
             }
 
@@ -122,34 +120,34 @@ public class Updateproduct extends HttpServlet {
             String imagePath = "";
 
             if (fileName != null && !fileName.isEmpty()) {
-                imagePath = "images/" + fileName;
-                File imageDir = new File(getServletContext().getRealPath("/") + "images");
+                imagePath = "Resources/Image/" + fileName;
+                File imageDir = new File(getServletContext().getRealPath("/") + "Image");
                 if (!imageDir.exists()) {
                     imageDir.mkdir();
-                    System.out.println("[DEBUG] Created image directory.");
+                    
                 }
 
                 String fullPath = getServletContext().getRealPath("/") + imagePath;
                 imagePart.write(fullPath);
-                System.out.println("[DEBUG] Image uploaded to: " + fullPath);
+                
 
             } else if (id > 0) {
                 Product existing = service.getProductById(id);
                 if (existing != null) {
                     imagePath = existing.getImagePath();
-                    System.out.println("[DEBUG] Reusing existing image path: " + imagePath);
+                    
                 } else {
                     req.setAttribute("error", "Original product not found for image reuse.");
                     setProductList(req);
                     req.getRequestDispatcher("/WEB-INF/Pages/UpdateProduct.jsp").forward(req, resp);
-                    System.out.println("[ERROR] Original product not found.");
+                    
                     return;
                 }
             } else {
                 req.setAttribute("error", "Product image is required.");
                 setProductList(req);
                 req.getRequestDispatcher("/WEB-INF/Pages/UpdateProduct.jsp").forward(req, resp);
-                System.out.println("[ERROR] No image provided.");
+               
                 return;
             }
 
@@ -158,10 +156,10 @@ public class Updateproduct extends HttpServlet {
 
             if (id > 0) {
                 success = service.updateProduct(product);
-                System.out.println("[DEBUG] Product update status: " + success);
+                
             } else {
                 success = service.addProduct(product);
-                System.out.println("[DEBUG] Product add status: " + success);
+                
             }
 
             if (success) {
@@ -173,7 +171,7 @@ public class Updateproduct extends HttpServlet {
         } catch (SQLException e) {
             req.setAttribute("error", "Database error: " + e.getMessage());
             e.printStackTrace();
-            System.out.println("[ERROR] SQLException in doPost: " + e.getMessage());
+            
             req.getRequestDispatcher("/WEB-INF/Pages/UpdateProduct.jsp").forward(req, resp);
         }
     }
@@ -182,7 +180,7 @@ public class Updateproduct extends HttpServlet {
         try {
             return param != null ? Integer.parseInt(param.trim()) : 0;
         } catch (NumberFormatException e) {
-            System.out.println("[ERROR] parseIntSafe failed: " + e.getMessage());
+            
             return 0;
         }
     }
@@ -191,7 +189,7 @@ public class Updateproduct extends HttpServlet {
         try {
             return param != null ? Double.parseDouble(param.trim()) : -1;
         } catch (NumberFormatException e) {
-            System.out.println("[ERROR] parseDoubleSafe failed: " + e.getMessage());
+            
             return -1;
         }
     }
@@ -200,7 +198,7 @@ public class Updateproduct extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         resp.getWriter().write("PUT method is not supported.");
-        System.out.println("[DEBUG] PUT method is not supported.");
+        
     }
 
     @Override
@@ -210,11 +208,11 @@ public class Updateproduct extends HttpServlet {
             boolean deleted = service.deleteProduct(id);
             resp.setStatus(deleted ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(deleted ? "Product deleted successfully!" : "Failed to delete product.");
-            System.out.println("[DEBUG] DELETE method executed. Deleted: " + deleted);
+            
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("Error while deleting product.");
-            System.out.println("[ERROR] SQLException in doDelete: " + e.getMessage());
+            
             e.printStackTrace();
         }
     }

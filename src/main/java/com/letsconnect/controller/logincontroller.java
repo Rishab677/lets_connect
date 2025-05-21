@@ -33,7 +33,7 @@ public class logincontroller extends HttpServlet {
         String password = req.getParameter("password");
 
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-            req.setAttribute("error", "Please fill in both username and password.");
+            req.setAttribute("errorMessage", "Please fill in both username and password.");
             req.getRequestDispatcher("/WEB-INF/Pages/Login.jsp").forward(req, resp);
             return;
         }
@@ -52,15 +52,15 @@ public class logincontroller extends HttpServlet {
             String role = fullUser.getRole();
             int userId = fullUser.getId();  
 
-            
+            // Set session attributes
             SessionUtil.setAttribute(req, "username", username);
             SessionUtil.setAttribute(req, "role", role);
             SessionUtil.setAttribute(req, "userID", userId); 
 
-     
+            // Add role cookie
             CookieUtil.addCookie(resp, "role", role, 5 * 30);
 
-          
+            // Redirect based on role
             if ("admin".equalsIgnoreCase(role)) {
                 resp.sendRedirect(req.getContextPath() + "/admin");
             } else {
@@ -68,7 +68,7 @@ public class logincontroller extends HttpServlet {
             }
 
         } else {
-            req.setAttribute("error", "Invalid username or password.");
+            req.setAttribute("errorMessage", "Invalid username or password.");
             req.getRequestDispatcher("/WEB-INF/Pages/Login.jsp").forward(req, resp);
         }
     }

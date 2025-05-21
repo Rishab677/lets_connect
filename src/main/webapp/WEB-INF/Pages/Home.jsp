@@ -14,7 +14,6 @@ body {
 	padding: 0;
 	color: #333;
 	background-color: #f9f9f9;
-	font-family: Arial, sans-serif;
 }
 
 a {
@@ -23,7 +22,8 @@ a {
 }
 
 .slider {
-	margin-top: 20px; position : relative;
+	margin-top: 20px;
+	position: relative;
 	width: 100%;
 	height: 500px;
 	max-width: 1200px;
@@ -33,7 +33,7 @@ a {
 }
 
 .slider img {
-margin-top: 10px;
+	margin-top: 10px;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
@@ -140,40 +140,47 @@ margin-top: 10px;
 			<button class="next" onclick="nextSlide()">❯</button>
 		</div>
 
-	
+
 		<section class="categories-section">
 			<h2>MOST POPULAR CATEGORIES</h2>
 			<div class="underline"></div>
 			<div class="categories-grid">
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/oppomobile.png" alt="Oppo Mobile">
+
+				<a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/oppomobile.png"
+					alt="Oppo Mobile">
 					<p>Oppo</p>
-				</div>
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/onepluse.jpg"
-						alt="OnePlus Mobile">
-					<p> One +</p>
-				</div>
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/Nokia.png"
-						alt="Nokia Mobile">
+				</a> <a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/onepluse.jpg"
+					alt="OnePlus Mobile">
+					<p>One +</p>
+				</a> <a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/Nokia.png"
+					alt="Nokia Mobile">
 					<p>Nokia</p>
-				</div>
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/Redmi.jpg" alt="Redmi">
+				</a> <a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/Redmi.jpg"
+					alt="Redmi">
 					<p>Redmi</p>
-				</div>
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/Samsungmobile.png"
-						alt="Samsung Mobile">
+				</a> <a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/Samsungmobile.png"
+					alt="Samsung Mobile">
 					<p>Samsung</p>
-				</div>
-				<div class="category-card">
-					<img src="${pageContext.request.contextPath}/Resources/Image/login/iphonemobile.png" alt="Iphone">
-					<p style= "color: ">iPhone</p>
-				</div>
+				</a> <a href="${pageContext.request.contextPath}/Productpagecontroller"
+					class="category-card"> <img
+					src="${pageContext.request.contextPath}/Resources/Image/login/iphonemobile.png"
+					alt="iPhone">
+					<p>iPhone</p>
+				</a>
+
 			</div>
 		</section>
+
 
 
 		<section class="brands-section">

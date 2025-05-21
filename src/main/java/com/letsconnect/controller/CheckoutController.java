@@ -38,24 +38,14 @@ public class CheckoutController extends HttpServlet {
             String paymentInvoice = req.getParameter("payment_invoice");
             String paymentVerification = req.getParameter("payment_verification");
 
-            // Log raw input values
-            System.out.println("Received Inputs:");
-            System.out.println("Quantity: " + qtyParam);
-            System.out.println("Total Price: " + priceParam);
-            System.out.println("Location: " + location);
-            System.out.println("Delivery Agency: " + deliveryAgency);
-            System.out.println("Delivery State: " + deliveryState);
-            System.out.println("Delivery Location: " + deliveryLocation);
-            System.out.println("Payment Method: " + paymentMethod);
-            System.out.println("Payment Invoice: " + paymentInvoice);
-            System.out.println("Payment Verification: " + paymentVerification);
+         
 
             // Input validation
             if (qtyParam == null || priceParam == null || location == null ||
                 deliveryAgency == null || deliveryState == null || deliveryLocation == null ||
                 paymentMethod == null || paymentInvoice == null || paymentVerification == null) {
                 req.setAttribute("error", "Missing required fields.");
-                System.out.println("ERROR: One or more required fields are null.");
+         
                 req.getRequestDispatcher("/WEB-INF/Pages/Checkout.jsp").forward(req, resp);
                 return;
             }
@@ -68,16 +58,15 @@ public class CheckoutController extends HttpServlet {
 
             CheckoutServices service = new CheckoutServices();
 
-            System.out.println("Calling placeOrder() method...");
+  
             service.placeOrder(quantity, totalPrice, location,
                     deliveryAgency, deliveryState, deliveryLocation,
                     paymentMethod, paymentInvoice, paymentVerification);
-            System.out.println("placeOrder() executed successfully.");
-
+            
             // Clear cart
             HttpSession session = req.getSession();
             session.removeAttribute("cart");
-            System.out.println("Cart cleared from session.");
+            
 
             req.setAttribute("message", "Order placed successfully!");
             req.getRequestDispatcher("/WEB-INF/Pages/Checkout.jsp").forward(req, resp);
